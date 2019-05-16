@@ -1,6 +1,7 @@
 # Keyworkd-Finder
 
-## Project Status: Ongoing 
+## Project Status: Finished
+
 
 **Goal:** 
 
