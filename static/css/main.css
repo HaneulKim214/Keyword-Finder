@@ -1,0 +1,58 @@
+body {
+    background: linear-gradient(
+                rgba(0,0,0,0.4),
+                rgba(0,0,0,0.4)
+                ),
+                url(../images/bg-bear2.jpg) 
+                no-repeat center;
+    background-size:cover;
+    height: 1000px;
+}
+
+.header {
+    color: aliceblue;
+    font-family: cursive;
+}
+.header h1 {
+    font-size: 320%;
+}
+
+.main-section {
+    margin: 0 auto;
+    margin-top: 200px;
+    height: 100%;
+}
+
+.modal-content{
+    background-color: rgb(216, 222, 236);
+    opacity: 0.8;
+    border-radius: 15px;
+    padding-bottom: 10px;
+}
+.form-group input {
+    border-radius: 15px;
+    font-size: 18px;
+}
+
+div .user-img img {
+    height: 140px;
+    width: 120px;
+    padding-bottom: 20px;
+}
+
+/* Change color of place holder of text type. */
+input[type="text"]::placeholder{
+    color: black;
+}
+
+/* button color */
+.btn-success {
+    background-color: brown;
+    border-radius: 5px;
+    border: black;
+}
+
+.btn-success:hover {
+    background-color: rgb(128, 27, 27);
+    border: black;
+}
