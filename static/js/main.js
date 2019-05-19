@@ -30,6 +30,6 @@ function scrape(input){
     // send input to python
     var url = `/scrape/${input}`;
     d3.json(url).then(function(data){
-        
+        console.log(data);
     });
 };
