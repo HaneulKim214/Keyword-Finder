@@ -19,8 +19,8 @@ part II:
 
 
 **Programs and Libraries used:**
-Main code: Python(Splinter, Flask, BS4, NLTK, sklearn)
-Visualization: javascript(d3, plotly), css3, html5, bootstrap4
-Database: MongoDB
+- Main code: Python(Splinter, Flask, BS4, NLTK, sklearn)
+- Visualization: javascript(d3, plotly), css3, html5, bootstrap4
+- Database: MongoDB
 
 :bear:
