@@ -6,7 +6,7 @@ body {
                 url(../images/bg-bear2.jpg) 
                 no-repeat center;
     background-size:cover;
-    height: 1000px;
+    height: 1200px;
 }
 
 .header {
@@ -17,9 +17,13 @@ body {
     font-size: 320%;
 }
 
+.header p {
+    font-size:130%;
+    /* font-family: 'Courier New', Courier, monospace; */
+}
+
 .main-section {
     margin: 0 auto;
-    margin-top: 200px;
     height: 100%;
 }
 
@@ -28,6 +32,7 @@ body {
     opacity: 0.8;
     border-radius: 15px;
     padding-bottom: 10px;
+    padding-top:10px;
 }
 .form-group input {
     border-radius: 15px;
@@ -35,8 +40,8 @@ body {
 }
 
 div .user-img img {
-    height: 140px;
-    width: 120px;
+    height: 180px;
+    width: 160px;
     padding-bottom: 20px;
 }
 

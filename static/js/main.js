@@ -29,7 +29,7 @@ go_search.on("click", function(){
 function scrape(input){
     // send input to python
     var url = `/scrape/${input}`;
-    d3.json(url).then(function(data){
-        console.log(data);
+    d3.json(url).then(function(response){
+        console.log(response);
     });
 };

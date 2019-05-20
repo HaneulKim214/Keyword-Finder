@@ -9,6 +9,7 @@ import pymongo
 import pandas as pd
 import re
 from splinter import Browser
+from sklearn.feature_extraction.text import CountVectorizer
 import time
 
 app = Flask(__name__)
@@ -49,6 +50,7 @@ def scrape_current_page():
         soup = BeautifulSoup(html, "html.parser")
         job_desc.append(soup.find("div", class_="desc").text)
     return None
+
 def scrape_all():
     # grab new html, grab page control elements
     html = browser.html
@@ -98,11 +100,49 @@ def text_classification():
     # call function and store it into variable.
     cleaned_list = stopword_deleter(tok)
     lemmatized_list = lemmatize(cleaned_list)
+    # Call get_top_100_words function to grab most occuring words that appeared most in bag_of_words
+    top_unigram = get_top_100_words(lemmatized_list)
+    top_bigram = get_top_100_words_2chunk(lemmatized_list)
 
-    # Find out 100 most frequent words
-    freq = nltk.FreqDist(lemmatized_list)
-    most_freq_words = freq.most_common(100)
-    print(most_freq_words)  # ================================================================ Left off here----> Works fine!
+    # change it to [{word:freq}] format.
+    full_list = []
+    unigram_list = []
+    uni_dict = {}
+    for key, value in top_unigram:
+        uni_dict[key] = int(value) #since json does not recognize numpy data type.
+    unigram_list.append(uni_dict)  # since we ran scikit learn it returned numbers as np.int
+
+    bigram_list = []
+    bi_dict = {}
+    for key, value in top_bigram:
+        bi_dict[key] = int(value)
+    bigram_list.append(bi_dict)
+
+    full_list.append(unigram_list)
+    full_list.append(bigram_list)
+
+    return full_list
+
+def get_top_100_words(cleaned_corpus, n=100):
+    vec = CountVectorizer().fit(cleaned_corpus)
+    bag_of_words = vec.transform(cleaned_corpus)
+    sum_words = bag_of_words.sum(axis=0) 
+    words_freq = [(word, sum_words[0, idx]) for word, idx in      
+                   vec.vocabulary_.items()]
+    words_freq =sorted(words_freq, key = lambda x: x[1], 
+                       reverse=True)
+    return words_freq[:n]
+
+def get_top_100_words_2chunk(corpus, n=None):
+    vec1 = CountVectorizer(ngram_range=(2,2),
+            max_features=2000).fit(corpus) 
+    bag_of_words = vec1.transform(corpus) 
+    sum_words = bag_of_words.sum(axis=0)
+
+    words_freq = [(word, sum_words[0, idx]) for word, idx in #Select 0 because dict_items has all tuples in a first list., ("job", 971) tuple is one item, then as idx increase it select next tuple and so on.
+                  vec1.vocabulary_.items()]
+    words_freq =sorted(words_freq, key = lambda x: x[1], reverse=True) #Sort by number. since ("job", 93). x[1] = 93. In descending order.
+    return words_freq[:n]
 
 @app.route("/")
 def home():
@@ -110,7 +150,7 @@ def home():
 
 @app.route("/scrape/<input>")
 def test(input):
-    # With initialized browser, lets visit glassdoor website
+    # With initialized browser from global, lets visit glassdoor website
     browser.visit(url)
 
     title, loc = input.split("!")
@@ -127,11 +167,15 @@ def test(input):
     browser.find_by_id("HeroSearchButton").click()
 
     scrape_all()
-    # After scraping has been done, move on to text cleaning step
-    text_classification()
+    # After scraping has been done, move on to text cleaning step and return top occuring items
+    # for unigrams and bi-grams
+    # Make these into [  [{}], [{}]  ]
+    # first list is top_unigram second is top_bigrams
+    full_list = text_classification()
 
+    print(full_list)
     # Returning to scrape function in js
-    return "All done"
+    return jsonify(full_list)
 
 
 if __name__ == "__main__":
