@@ -6,11 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Keyword-Finder</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.2/d3.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/css/main.css">
 </head>
 
 <body>
+    <div class="first-page">
     <div class="header text-center">
         <h1>Find your job keywords!</h1>
         <br>
@@ -21,9 +23,6 @@
         <br>
         <p> Applied natural language processing tools and machine learning algorithms to create bag of words model and n-grams to consider 1-chunk word and 2-chunk words</p>
         <br>
-        <br>
-        <p>NOTE: when new browser pops up and you are not signed into glassdor, please sign in.</p>
-        <p>Also do not close new openned browser, it need to be kept open.</p>
         <h3 style="font-family: 'Courier New', Courier, monospace;">Enjoy!</h3>
     </div>
     <p>I love you hanna</p>
@@ -39,20 +38,29 @@
                 <div class="col-12 form-input">
                     <form action="">
                         <div class="form-group">
-                            <input i d="job-title" type="text" class="form-control" placeholder="Job Title">
+                            <input id="job-title" type="text" class="form-control" placeholder="Job Title">
                         </div>
                         <div class="form-group">
                             <input id="job-loc" type="text" class="form-control" placeholder="Location">
                         </div>
-                        <button id="submit" type="submit" class="btn btn-success">Go Search</button>
+                        <!-- onclick="document.getElementById('charts').scrollIntoView();" -->
+                        <button id="submit" type="submit" class="btn btn-success" onclick="document.getElementById('charts').scrollIntoView();">Go Search</button>
                     </form>
                 </div>
             </div>
 
         </div>
     </div>
+    </div>
+    <div id="charts" class="row jumbotron">
+        <div class="col-6" id="unigram-chart">
+            Placeholder
+        </div>
+        <div class="col-6">
+            Placeholder
+        </div>
+    </div>
 
     <script src="../static/js/main.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </body>
 </html>

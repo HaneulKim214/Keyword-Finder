@@ -1,7 +1,5 @@
-console.log("asd");
 // give reference to "Go Search" button
 var go_search = d3.select("#submit");
-
 
 go_search.on("click", function(){
     d3.event.preventDefault();
@@ -24,12 +22,36 @@ go_search.on("click", function(){
    
     // send it off to scrape function 
     scrape(input);
-})
+});
 
 function scrape(input){
     // send input to python
     var url = `/scrape/${input}`;
     d3.json(url).then(function(response){
         console.log(response);
+
+        // separate them store into variable
+        // each in the form - [{word: "sql", freq:123}]
+        var unigram = response[0];
+        var bigram = response[1];
+
+        // pass n-grams to barChart for plotting
+        barChart(unigram);
     });
+};
+
+function barChart(list_of_dicts){
+    // map function to store words in one list and frequency on another
+    var words = list_of_dicts.map(x => x.word); // [word1, word2,....]
+    var freqs = list_of_dicts.map(x => x.freq); // [freq1, freq2, ...]
+    
+    console.log(words);
+    console.log(freqs);
+    var data = [{
+        x: words,
+        y: freqs,
+        type:"bar"
+    }];
+
+    Plotly.newPlot('unigram-chart', data);
 };

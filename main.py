@@ -49,29 +49,37 @@ def scrape_current_page():
         html = browser.html
         soup = BeautifulSoup(html, "html.parser")
         job_desc.append(soup.find("div", class_="desc").text)
+
+        time.sleep(1)
     return None
 
 def scrape_all():
     # grab new html, grab page control elements
     html = browser.html
     soup = BeautifulSoup(html, "html.parser")
-    result = soup.find("div", class_="pagingControls").ul
-    pages = result.find_all("li")
 
-    # Scrape first page before going to next
-    scrape_current_page()
-    for page in pages:
-        # run if <a> exists since un-clickable do not have <a> skipping < and pg1
-        if page.a:
-            # within <a> tag click except next button         
-            if not page.find("li", class_="Next"):
-                try:
-                    # Click to goto next page, then scrape it.
-                    browser.click_link_by_href(page.a['href'])
-                    # --------- call scrape data function here ---------
-                    scrape_current_page()
-                except:
-                    print("This is the last page")
+    # Will throw an error if there is no pagining control => one page => goto except statement
+    try:
+        result = soup.find("div", class_="pagingControls").ul
+        pages = result.find_all("li")
+
+        for page in pages:
+            # scrape each page
+            scrape_current_page()
+            # run if <a> exists since un-clickable do not have <a> skipping < and pg1
+            if page.a:
+                # within <a> tag click except next button         
+                if not page.find("li", class_="Next"):
+                    try:
+                        # Click to goto next page.
+                        browser.click_link_by_href(page.a['href'])
+                    except:
+                        print("This is the last page")
+                        break
+    # only one page
+    except:
+        scrape_current_page()
+
     # No need to return since we appened all data into list
     return None
 
@@ -81,7 +89,7 @@ def stopword_deleter(tokenized_job_desc):
     final_word_list = []
     for lists in tokenized_job_desc:
         for item in lists:
-            if len(item)>2 and (item not in stop):
+            if len(item)>2 and (item not in stop) and not(re.search(r"^[0-9]", item)):
                 # Some words have \\ at the end, remove them.           
                 final_word_list.append(item.replace("\\",""))
     return final_word_list
@@ -92,7 +100,12 @@ def lemmatize(cleaned_list_to_be_lemmatized):
     return lemmatized_list
 
 def text_classification():
-    global job_desc
+    global job_desc # this allows you to modify global variable locally.
+
+    # Befroe cleaning remove duplicated scrapes so we do not have same job desctions
+    job_desc = set(job_desc)
+    job_desc = list(job_desc)    
+
     for job in job_desc:
         ", ".join(job.split('/'))
     job_desc = [", ".join(job.split('/')) for job in job_desc]
@@ -100,28 +113,30 @@ def text_classification():
     # call function and store it into variable.
     cleaned_list = stopword_deleter(tok)
     lemmatized_list = lemmatize(cleaned_list)
-    # Call get_top_100_words function to grab most occuring words that appeared most in bag_of_words
+    # Call get_top_100_words function to grab most occuring words in tuple format (word, freq)
     top_unigram = get_top_100_words(lemmatized_list)
     top_bigram = get_top_100_words_2chunk(lemmatized_list)
 
     # change it to [{word:freq}] format.
     full_list = []
     unigram_list = []
-    uni_dict = {}
-    for key, value in top_unigram:
-        uni_dict[key] = int(value) #since json does not recognize numpy data type.
-    unigram_list.append(uni_dict)  # since we ran scikit learn it returned numbers as np.int
-
     bigram_list = []
-    bi_dict = {}
-    for key, value in top_bigram:
-        bi_dict[key] = int(value)
-    bigram_list.append(bi_dict)
+
+    for item in top_unigram:
+        uni_dict = {}
+        uni_dict["word"] = item[0]
+        uni_dict["freq"] = int(item[1])
+        unigram_list.append(uni_dict)
+    for item in top_unigram:
+        bi_dict = {}
+        bi_dict["word"] = item[0] #since json does not recognize numpy data type.
+        bi_dict["freq"] = int(item[1]) # since we ran scikit learn it returned numbers as np.int
+        bigram_list.append(uni_dict)
 
     full_list.append(unigram_list)
     full_list.append(bigram_list)
 
-    return full_list
+    return full_list # in the form [{word: freq, word2:freq, ...}]
 
 def get_top_100_words(cleaned_corpus, n=100):
     vec = CountVectorizer().fit(cleaned_corpus)
@@ -133,7 +148,7 @@ def get_top_100_words(cleaned_corpus, n=100):
                        reverse=True)
     return words_freq[:n]
 
-def get_top_100_words_2chunk(corpus, n=None):
+def get_top_100_words_2chunk(corpus, n=100):
     vec1 = CountVectorizer(ngram_range=(2,2),
             max_features=2000).fit(corpus) 
     bag_of_words = vec1.transform(corpus) 
@@ -179,4 +194,4 @@ def test(input):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
