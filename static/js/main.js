@@ -48,10 +48,23 @@ function barChart(list_of_dicts){
     console.log(words);
     console.log(freqs);
     var data = [{
-        x: words,
-        y: freqs,
-        type:"bar"
+        x: freqs,
+        y: words,
+        type:"bar",
+        orientation:"h",
+        marker:{
+            color:"rgba(55,128,191,0.6)"
+        }
     }];
 
-    Plotly.newPlot('unigram-chart', data);
+    var layout = {
+        autosize:true,
+        yaxis:{
+            title:"top 100 most frequent uni-gram words",
+            ticktext:words,
+            automargin:true
+        }
+    };
+
+    Plotly.newPlot('unigram-chart', data, layout);
 };

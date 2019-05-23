@@ -21,6 +21,11 @@ html {
     font-size: 320%;
 }
 
+div {
+    resize:both;
+    overflow: auto;
+}
+
 .header p {
     font-size:130%;
     /* font-family: 'Courier New', Courier, monospace; */
@@ -31,6 +36,9 @@ html {
     height: 100%;
 }
 
+#charts {
+    height:500px;
+}
 
 .modal-content{
     background-color: rgb(216, 222, 236);
