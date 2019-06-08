@@ -7,6 +7,16 @@
     <title>Keyword-Finder</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.2/d3.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <!-- jQuery -->
+    <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css">
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/css/main.css">
 </head>
@@ -43,7 +53,8 @@
                             <input id="job-loc" type="text" class="form-control" placeholder="Location">
                         </div>
                         <!-- onclick="document.getElementById('charts').scrollIntoView();" -->
-                        <button id="submit" type="submit" class="btn btn-success" onclick="document.getElementById('charts').scrollIntoView();">Go Search</button>
+                        <button id="submit" type="submit" class="btn btn-success" onclick="document.getElementById('unigram-chart').scrollIntoView();">Go Search</button>
+                        
                     </form>
                 </div>
             </div>
@@ -51,13 +62,17 @@
         </div>
     </div>
     </div>
-    <div id="charts" class="row">
-        <div class="col-md-6" id="unigram-chart">
-            Placeholder
+
+    <div class="col-md-12" id="unigram-chart">
+        <div id="loader" class="text-center" style="margin-top: 300px;">
         </div>
-        <div class="col-md-6">
-            Placeholder
-        </div>
+    </div>
+
+    <div class="col-md-12" id="bigram-chart">
+    </div>
+
+    <div id="myMap" style="width: 1400px; height:700px;">
+
     </div>
 
     <script src="../static/js/main.js"></script>

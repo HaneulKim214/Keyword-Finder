@@ -122,23 +122,25 @@ def text_classification():
     unigram_list = []
     bigram_list = []
 
+
     for item in top_unigram:
         uni_dict = {}
         uni_dict["word"] = item[0]
         uni_dict["freq"] = int(item[1])
         unigram_list.append(uni_dict)
-    for item in top_unigram:
+
+    for item in top_bigram:
         bi_dict = {}
         bi_dict["word"] = item[0] #since json does not recognize numpy data type.
         bi_dict["freq"] = int(item[1]) # since we ran scikit learn it returned numbers as np.int
-        bigram_list.append(uni_dict)
+        bigram_list.append(bi_dict)
 
     full_list.append(unigram_list)
     full_list.append(bigram_list)
 
     return full_list # in the form [{word: freq, word2:freq, ...}]
 
-def get_top_100_words(cleaned_corpus, n=100):
+def get_top_100_words(cleaned_corpus, n=50):
     vec = CountVectorizer().fit(cleaned_corpus)
     bag_of_words = vec.transform(cleaned_corpus)
     sum_words = bag_of_words.sum(axis=0) 
@@ -148,13 +150,13 @@ def get_top_100_words(cleaned_corpus, n=100):
                        reverse=True)
     return words_freq[:n]
 
-def get_top_100_words_2chunk(corpus, n=100):
+def get_top_100_words_2chunk(corpus, n=50):
     vec1 = CountVectorizer(ngram_range=(2,2),
             max_features=2000).fit(corpus) 
     bag_of_words = vec1.transform(corpus) 
     sum_words = bag_of_words.sum(axis=0)
 
-    words_freq = [(word, sum_words[0, idx]) for word, idx in #Select 0 because dict_items has all tuples in a first list., ("job", 971) tuple is one item, then as idx increase it select next tuple and so on.
+    words_freq = [(word, sum_words[0, idx]) for word, idx in # Select 0 because dict_items has all tuples in a first list., ("job", 971) tuple is one item, then as idx increase it select next tuple and so on.
                   vec1.vocabulary_.items()]
     words_freq =sorted(words_freq, key = lambda x: x[1], reverse=True) #Sort by number. since ("job", 93). x[1] = 93. In descending order.
     return words_freq[:n]
