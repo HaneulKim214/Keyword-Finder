@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 # list to store scraped data
 company = []
-all_location = []
+location = []
 job_desc = []
 position = []
 
@@ -35,13 +35,30 @@ def scrape_current_page():
 
     for job in jobs:
         # Store all info into a list         
-        position.append(job.find("div", class_="jobTitle").a.text)
-        # ex: Tommy - Singapore
-        comp_loc = job.find("div", class_="empLoc").div.text
-        comp, loc = comp_loc.split("–")
+#         position.append(job.find("div", class_="jobTitle").a.text)
+        
+        # Pop up will show up as soon as we start scraping.
+        # so wait few seconds
+        time.sleep(2)
+        
+        # print to see if there was a pop-up
+        exit_button = soup.find("div", class_="ModalStyle__xBtn___34qya")
+        
+        # If there was a pop-up click close button.
+        if exit_button:
+            browser.find_by_css(".ModalStyle__xBtn___34qya").first.click()
+        
+        # Find company name
+        comp = job.find("div", class_="jobHeader").div.text
+        # Appending each company name into a list
+        company.append(comp)
+        
+        #same for locations
+        loc = job.find('div', class_="empLoc").span.text
+        location.append(loc)
+
+        # print(loc)
         # print(comp)
-        company.append(comp.strip())
-        all_location.append(loc.strip())
                 
         # ------------- Scrape Job descriptions within a page -----------
         # job description is in another html, therefore retrieve it once again after
@@ -58,13 +75,6 @@ def scrape_all():
     # grab new html, grab page control elements
     html = browser.html
     soup = BeautifulSoup(html, "html.parser")
-
-    time.sleep(10) # prevent clicking before pop-up
-    # If there is no pop-up, continue
-    if soup.find("div", class_="ModalStyle__xBtn___34qya"):
-        print(soup.find("div", class_="ModalStyle__xBtn___34qya"))
-    
-    print("works up to here")
 
     # Will throw an error if there is no pagining control => one page => goto except statement
     try:
@@ -87,6 +97,7 @@ def scrape_all():
     # only one page
     except:
         scrape_current_page()
+        
 
     # No need to return since we appened all data into list
     return None
