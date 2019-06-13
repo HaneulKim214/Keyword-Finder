@@ -84,7 +84,7 @@ function barChart(list_of_dicts){
     };
 
     // Delete data loader before loading any chart
-    $('#loader').fadeOut(500, function(){ $('#loader').remove(); });
+    $('#loader').fadeOut(50, function(){ $('#loader').remove(); });
 
 
 
@@ -138,44 +138,72 @@ function bigramChart(list_of_dicts){
 function map(){
     
     var myMap = L.map('myMap', {
-        center:[45.5017, -73.5673],
-        zoom:3
+        center:[37.5665, 126.9780],
+        zoom:10
     });
-    L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiaGFuZXVsa2ltMjE0IiwiYSI6ImNqdnB0cjJtMjJkMmM0NW9pNmN0bjFyZjUifQ.v8Hz5-t66g5-AmrRQXDfDQ", {
+    L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
         maxZoom: 18,
-        id: "mapbox.streets-basic"
+        id: "mapbox.streets-basic",
+        accessToken: API_KEY
     }).addTo(myMap);
+    console.log('test')
 
     var cities =  [{
-        location: [40.7128, -74.0059],
-        name: "New York",
-        population: "8,550,405"
+        location: [37.5665, 126.5780],
+        name: "Oracle",
+        position: "Data Analytics"
         },
         {
-        location: [41.8781, -87.6298],
-        name: "Chicago",
-        population: "2,720,546"
+        location: [37.1665, 126.9780],
+        name: "Bank of America",
+        position: "Data Analyst"
         },
         {
-        location: [29.7604, -95.3698],
-        name: "Houston",
-        population: "2,296,224"
+        location: [37.5665, 126.5780],
+        name: "Axiologic Solutions",
+        position: "Data Analyst"
         },
         {
-        location: [34.0522, -118.2437],
-        name: "Los Angeles",
-        population: "3,971,883"
+        location: [37.5665, 126.5550],
+        name: "Bloomberg",
+        position: "Market Data Analyst"
         },
         {
-        location: [41.2524, -95.9980],
-        name: "Omaha",
-        population: "446,599"
+        location: [37.5165, 126.5780],
+        name: "Mercedes-benz",
+        position: "Financial Analst"
+        },
+        {
+        location: [37.5965, 126.5980],
+        name: "Oracle",
+        position: "Data Analytics"
+        },
+        {
+        location: [37.7665, 126.7770],
+        name: "Bank of America",
+        position: "Data Analyst"
+        },
+        {
+        location: [37.5665, 126.3380],
+        name: "Axiologic Solutions",
+        position: "Data Analyst"
+        },
+        {
+        location: [37.3665, 126.5780],
+        name: "Bloomberg",
+        position: "Market Data Analyst"
+        },
+        {
+        location: [37.7665, 126.5780],
+        name: "Mercedes-benz",
+        position: "Financial Analst"
         }
         ];
     for (var i = 0; i < cities.length; i++) {
         var city = cities[i];
         L.marker(city.location)
-            .bindPopup("<h1>" + city.name + "</h1> <hr> <h3>Population " + city.population + "</h3>")
+            .bindPopup("<h1>" + city.name + "</h1> <hr> <h3>Population " + city.position + "</h3>")
             .addTo(myMap);
         };
 };

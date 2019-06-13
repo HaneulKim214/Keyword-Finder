@@ -27,6 +27,7 @@ browser = Browser('chrome', **executable_path, headless=False)
 url = "https://www.glassdoor.ca/index.htm"
 
 def scrape_current_page():
+
     # Getting html of first page
     html = browser.html
     soup = BeautifulSoup(html, "html.parser")
@@ -50,13 +51,20 @@ def scrape_current_page():
         soup = BeautifulSoup(html, "html.parser")
         job_desc.append(soup.find("div", class_="desc").text)
 
-        time.sleep(1)
+        time.sleep(1) # Since splinter scrapes too fast and skips some job description.
     return None
 
 def scrape_all():
     # grab new html, grab page control elements
     html = browser.html
     soup = BeautifulSoup(html, "html.parser")
+
+    time.sleep(10) # prevent clicking before pop-up
+    # If there is no pop-up, continue
+    if soup.find("div", class_="ModalStyle__xBtn___34qya"):
+        print(soup.find("div", class_="ModalStyle__xBtn___34qya"))
+    
+    print("works up to here")
 
     # Will throw an error if there is no pagining control => one page => goto except statement
     try:

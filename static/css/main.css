@@ -21,10 +21,10 @@ html {
     font-size: 320%;
 }
 
-div {
+/* div {
     resize:both;
     overflow: auto;
-}
+} */
 
 .header p {
     font-size:130%;
@@ -80,6 +80,7 @@ input[type="text"]::placeholder{
 #myMap{
     margin-left:7%;
 }
+
 #loader {
     margin-left:47%;
     border: 16px solid #f3f3f3; /* Light grey */
