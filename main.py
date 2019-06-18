@@ -32,14 +32,10 @@ def test(input):
     # Clicking button
     browser.find_by_id("HeroSearchButton").click()
 
-    company, location = nlp.scrape_all()
+    nlp.scrape_all()
     full_list = nlp.text_classification()
 
-    # print(full_list)
-    # Returning to scrape function in js
-    # from nlp import company
-    print(company)
-    print(location)
+    print(full_list)
     return jsonify(full_list)
 
 

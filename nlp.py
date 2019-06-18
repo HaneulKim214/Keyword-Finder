@@ -91,8 +91,11 @@ def scrape_all():
         scrape_current_page()
         
 
+    # Close browser after scraping
+    browser.quit()
+
     # No need to return since we appened all data into list
-    return company, location
+    return None
 
 def stopword_deleter(tokenized_job_desc):
     """ ignore stop words, bullets, etc. And put it into one list """
@@ -154,7 +157,11 @@ def text_classification():
     full_list.append(unigram_list)
     full_list.append(bigram_list)
 
-    return full_list # in the form [{word: freq, word2:freq, ...}]
+    # Also append company name and location (list made from scrape_all function)
+    full_list.append(company)
+    full_list.append(location)
+
+    return full_list # in the form [ [{word: freq, word2:freq, ...}], [{bigram: asd, bigram:sdf}] ]
 
 def get_top_100_words(cleaned_corpus, n=50):
     vec = CountVectorizer().fit(cleaned_corpus)

@@ -12,16 +12,10 @@ go_search.on("click", function(){
     d3.select("#job-title").node().value = "";
     d3.select("#job-loc").node().value = "";
 
-    // console.log(title);
-    // console.log(loc);
-
-
-    // Since HTTP only allow to send string we split title and location by "/" which
+    // Since HTTP only allow to send string we split title and location by "!" which
     // we will split in python to separate two words.
-    var input = title +"!" + loc
+    var input = title + "!" + loc
 
-    // console.log(input);
-   
     // send it off to scrape function 
     scrape(input);
 });
@@ -36,13 +30,13 @@ function scrape(input){
         // each in the form - [{word: "sql", freq:123}]
         var unigram = response[0];
         var bigram = response[1];
-        console.log(unigram)
-        console.log(bigram)
-        
+        var company = response[2];
+        var location = response[3];
 
         // pass n-grams to barChart for plotting
         barChart(unigram);
         bigramChart(bigram);
+        map(company);
     });
 };
 
@@ -86,8 +80,6 @@ function barChart(list_of_dicts){
     // Delete data loader before loading any chart
     $('#loader').fadeOut(50, function(){ $('#loader').remove(); });
 
-
-
     Plotly.newPlot('unigram-chart', data, layout);
 };
 
@@ -130,12 +122,9 @@ function bigramChart(list_of_dicts){
     };
 
     Plotly.newPlot('bigram-chart', data, layout);
-
-    // Calling map function after all ploting is done.
-    map();
 };
 
-function map(){
+function map(company){
     
     var myMap = L.map('myMap', {
         center:[37.5665, 126.9780],
@@ -147,63 +136,64 @@ function map(){
         id: "mapbox.streets-basic",
         accessToken: API_KEY
     }).addTo(myMap);
-    console.log('test')
 
-    var cities =  [{
-        location: [37.5665, 126.5780],
-        name: "Oracle",
-        position: "Data Analytics"
-        },
-        {
-        location: [37.1665, 126.9780],
-        name: "Bank of America",
-        position: "Data Analyst"
-        },
-        {
-        location: [37.5665, 126.5780],
-        name: "Axiologic Solutions",
-        position: "Data Analyst"
-        },
-        {
-        location: [37.5665, 126.5550],
-        name: "Bloomberg",
-        position: "Market Data Analyst"
-        },
-        {
-        location: [37.5165, 126.5780],
-        name: "Mercedes-benz",
-        position: "Financial Analst"
-        },
-        {
-        location: [37.5965, 126.5980],
-        name: "Oracle",
-        position: "Data Analytics"
-        },
-        {
-        location: [37.7665, 126.7770],
-        name: "Bank of America",
-        position: "Data Analyst"
-        },
-        {
-        location: [37.5665, 126.3380],
-        name: "Axiologic Solutions",
-        position: "Data Analyst"
-        },
-        {
-        location: [37.3665, 126.5780],
-        name: "Bloomberg",
-        position: "Market Data Analyst"
-        },
-        {
-        location: [37.7665, 126.5780],
-        name: "Mercedes-benz",
-        position: "Financial Analst"
-        }
-        ];
+    console.log('map working up to line 148')
+
+    // var cities =  [{
+    //     location: [37.5665, 126.5780],
+    //     name: "Oracle",
+    //     position: "Data Analytics"
+    //     },
+    //     {
+    //     location: [37.1665, 126.9780],
+    //     name: "Bank of America",
+    //     position: "Data Analyst"
+    //     },
+    //     {
+    //     location: [37.5665, 126.5780],
+    //     name: "Axiologic Solutions",
+    //     position: "Data Analyst"
+    //     },
+    //     {
+    //     location: [37.5665, 126.5550],
+    //     name: "Bloomberg",
+    //     position: "Market Data Analyst"
+    //     },
+    //     {
+    //     location: [37.5165, 126.5780],
+    //     name: "Mercedes-benz",
+    //     position: "Financial Analst"
+    //     },
+    //     {
+    //     location: [37.5965, 126.5980],
+    //     name: "Oracle",
+    //     position: "Data Analytics"
+    //     },
+    //     {
+    //     location: [37.7665, 126.7770],
+    //     name: "Bank of America",
+    //     position: "Data Analyst"
+    //     },
+    //     {
+    //     location: [37.5665, 126.3380],
+    //     name: "Axiologic Solutions",
+    //     position: "Data Analyst"
+    //     },
+    //     {
+    //     location: [37.3665, 126.5780],
+    //     name: "Bloomberg",
+    //     position: "Market Data Analyst"
+    //     },
+    //     {
+    //     location: [37.7665, 126.5780],
+    //     name: "Mercedes-benz",
+    //     position: "Financial Analst"
+    //     }
+    //     ];
     for (var i = 0; i < cities.length; i++) {
         var city = cities[i];
-        L.marker(city.location)
-            .bindPopup("<h1>" + city.name + "</h1> <hr> <h3>Population " + city.position + "</h3>")
+        L.marker([37.7665, 126.5780])
+            .bindPopup("<h1>" + company[i] + "</h1>")
             .addTo(myMap);
         };
 };
