@@ -8,6 +8,10 @@ from sklearn.feature_extraction.text import CountVectorizer
 import time
 from splinter import Browser
 
+# my dependencies
+import googleMapApi
+
+
 # list to store scraped data
 company = []
 location = []
@@ -154,13 +158,14 @@ def text_classification():
         bi_dict["freq"] = int(item[1]) # since we ran scikit learn it returned numbers as np.int
         bigram_list.append(bi_dict)
 
+    # using company name and location grab [{lat:y, lng:x}, {}, {},...]
+    # send list of company and location
+    geocodes = googleMapApi.get_geocode(location, company)
+
     full_list.append(unigram_list)
     full_list.append(bigram_list)
-
-    # Also append company name and location (list made from scrape_all function)
+    full_list.append(geocodes)
     full_list.append(company)
-    full_list.append(location)
-
     return full_list # in the form [ [{word: freq, word2:freq, ...}], [{bigram: asd, bigram:sdf}] ]
 
 def get_top_100_words(cleaned_corpus, n=50):

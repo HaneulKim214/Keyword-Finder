@@ -21,7 +21,7 @@ go_search.on("click", function(){
 });
 
 function scrape(input){
-    // get data from python. 
+    // get data from python route("/scrape/<input>"). 
     var url = `/scrape/${input}`;
     d3.json(url).then(function(response){
         console.log(response);
@@ -30,17 +30,17 @@ function scrape(input){
         // each in the form - [{word: "sql", freq:123}]
         var unigram = response[0];
         var bigram = response[1];
-        var company = response[2];
-        var location = response[3];
+        var geocode = response[2];
+        var company = response[3];
 
         // pass n-grams to barChart for plotting
-        barChart(unigram);
+        unigramChart(unigram);
         bigramChart(bigram);
-        map(company);
+        map(geocode, company);
     });
 };
 
-function barChart(list_of_dicts){
+function unigramChart(list_of_dicts){
     // map function to store words in one list and frequency on another
     var words = list_of_dicts.map(x => x.word); // [word1, word2,....]
     var freqs = list_of_dicts.map(x => x.freq); // [freq1, freq2, ...]
@@ -74,8 +74,14 @@ function barChart(list_of_dicts){
             titlefont:{size:30},
             ticktext:words,
             automargin:true
+        },
+        xaxis:{
+            title:"Frequency (count)",
+            titlefont:{
+                size:30
+            }
         }
-    };
+    }
 
     // Delete data loader before loading any chart
     $('#loader').fadeOut(50, function(){ $('#loader').remove(); });
@@ -87,9 +93,6 @@ function bigramChart(list_of_dicts){
     // map function to store words in one list and frequency on another
     var words = list_of_dicts.map(x => x.word); // [word1, word2,....]
     var freqs = list_of_dicts.map(x => x.freq); // [freq1, freq2, ...]
-    
-    // console.log(words);
-    // console.log(freqs);
     var data = [{
         x: freqs,
         y: words,
@@ -118,14 +121,30 @@ function bigramChart(list_of_dicts){
     
             ticktext:words,
             automargin:true
+        },
+        xaxis:{
+            title:"Frequency (count)",
+            titlefont:{
+                size:30
+            }
         }
     };
 
     Plotly.newPlot('bigram-chart', data, layout);
 };
 
-function map(company){
-    
+
+
+// -------------- Heat map of Job location --------------
+function map(geocode, company){
+
+    var lat = geocode.map(x => x.lat);
+    var lng = geocode.map(x => x.lng);
+
+    // get distinct geocode
+    distinct_geocode = distinct_geocode(lat,lng);
+    console.log(distinct_geocode);
+
     var myMap = L.map('myMap', {
         center:[37.5665, 126.9780],
         zoom:10
@@ -137,64 +156,41 @@ function map(company){
         accessToken: API_KEY
     }).addTo(myMap);
 
-    console.log('map working up to line 148')
+    console.log('map working up to line 159')
 
-    // var cities =  [{
-    //     location: [37.5665, 126.5780],
-    //     name: "Oracle",
-    //     position: "Data Analytics"
-    //     },
-    //     {
-    //     location: [37.1665, 126.9780],
-    //     name: "Bank of America",
-    //     position: "Data Analyst"
-    //     },
-    //     {
-    //     location: [37.5665, 126.5780],
-    //     name: "Axiologic Solutions",
-    //     position: "Data Analyst"
-    //     },
-    //     {
-    //     location: [37.5665, 126.5550],
-    //     name: "Bloomberg",
-    //     position: "Market Data Analyst"
-    //     },
-    //     {
-    //     location: [37.5165, 126.5780],
-    //     name: "Mercedes-benz",
-    //     position: "Financial Analst"
-    //     },
-    //     {
-    //     location: [37.5965, 126.5980],
-    //     name: "Oracle",
-    //     position: "Data Analytics"
-    //     },
-    //     {
-    //     location: [37.7665, 126.7770],
-    //     name: "Bank of America",
-    //     position: "Data Analyst"
-    //     },
-    //     {
-    //     location: [37.5665, 126.3380],
-    //     name: "Axiologic Solutions",
-    //     position: "Data Analyst"
-    //     },
-    //     {
-    //     location: [37.3665, 126.5780],
-    //     name: "Bloomberg",
-    //     position: "Market Data Analyst"
-    //     },
-    //     {
-    //     location: [37.7665, 126.5780],
-    //     name: "Mercedes-benz",
-    //     position: "Financial Analst"
-    //     }
-    //     ];
-    for (var i = 0; i < cities.length; i++) {
-        var city = cities[i];
-        L.marker([37.7665, 126.5780])
-            .bindPopup("<h1>" + company[i] + "</h1>")
+
+    distinct_geocode.forEach(function(geocode){
+        // notice geocode = [lat,lng]
+        L.marker(geocode)
+            .bindPopup()
             .addTo(myMap);
-        };
+    });
+
 };
 
+function distinct_geocode(lat, lng){
+
+  lat_lng = [];
+  for (var i = 0; i < lat.length; i++){
+  
+    lat_str = lat[i].toString()
+    lng_str = lng[i].toString()
+  
+    lat_lng.push(lat_str + "," + lng_str)
+  };
+  
+  lat_lng = new Set(lat_lng);
+  
+  distinct_lat_lng = [];
+  
+  lat_lng.forEach(function(x){
+    r = x.split(",");
+    // change r =[lat,lng] to int
+    for (var i =0; i<r.length; i++) {
+      r[i] = +r[i]
+    } 
+    
+    distinct_lat_lng.push(r);
+  });
+  return distinct_lat_lng;
+};
