@@ -1,0 +1,1 @@
+FLASK_APP=Keyword-Finder/app.py flask run
