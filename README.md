@@ -1,6 +1,6 @@
 # Keyword-Finder
 
-![gif](static/images/keyword.gif)
+![gif](Keyword-Finder/static/images/keyword.gif)
 
 ## Project Status: Finished
 
