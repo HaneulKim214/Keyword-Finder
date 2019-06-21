@@ -1,6 +1,4 @@
 beautifulsoup4==4.6.3
-conda==4.6.14
-conda-build==3.17.6
 django-bootstrap3==11.0.0
 docutils==0.14
 Flask==1.0.2
