@@ -6,6 +6,7 @@ import pymongo
 from splinter import Browser
 
 
+
 app = Flask(__name__)
 
 @app.route("/")
