@@ -9,7 +9,7 @@ import time
 from splinter import Browser
 
 # my dependencies
-import googleMapApi
+from .googleMapApi import *
 
 
 # list to store scraped data
