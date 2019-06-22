@@ -19,7 +19,7 @@ job_desc = []
 position = []
 
 executable_path = {'executable_path': "chromedriver.exe"}
-browser = Browser('chrome', **executable_path, headless=False)
+browser = Browser('chrome', **executable_path, headless=True)
 # glassdoor url
 url = "https://www.glassdoor.ca/index.htm"
 # With initialized browser from global, lets visit glassdoor website
