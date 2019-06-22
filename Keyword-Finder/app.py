@@ -16,7 +16,7 @@ def home():
 @app.route("/scrape/<input>")
 def test(input):
     # grabbing variable from nlp file
-    from nlp import browser
+    from .nlp import browser
     # import nlp to use its methods
     import nlp
 
