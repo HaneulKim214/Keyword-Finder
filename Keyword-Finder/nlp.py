@@ -160,7 +160,7 @@ def text_classification():
 
     # using company name and location grab [{lat:y, lng:x}, {}, {},...]
     # send list of company and location
-    geocodes = googleMapApi.get_geocode(location, company)
+    geocodes = get_geocode(location, company)
 
     full_list.append(unigram_list)
     full_list.append(bigram_list)
